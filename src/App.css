@@ -1,38 +1,124 @@
+/* App.css - Responsive Dark Theme */
+
+body {
+  background-color: #121212;
+  color: white;
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.chart-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+svg {
+  background-color: white;
+}
+
+.cell:hover {
+  stroke: black;
+  stroke-width: 1px;
+}
+
+#tooltip {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  pointer-events: none;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+  margin-top: 30px;
+  font-size: 14px;
+  color: #666;
+}
+
+h1,
+h2,
+p {
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+h1 {
+  font-size: 18px;
+}
+
+h2 {
+  font-size: 14px;
+}
+
+svg {
+  display: block;
+  width: 80%;
+  height: auto;
+  margin: auto;
+}
+
+/* Bars */
+.dot {
+  transition: fill 0.3s ease-in-out;
+}
+
+.dot:hover {
+  fill: green;
+}
+/* Tooltip */
+#tooltip {
+  position: absolute;
+  background: rgba(20, 20, 20, 0.9);
+  color: #ffffff;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  svg {
+    width: 80%;
+  }
+}
+
+.footer {
+  margin-top: 20px;
+  text-align: center;
+  color: #bbb;
+  font-size: 0.9rem;
+  padding: 10px;
+}
+
+.footer p {
+  margin: 0;
+  font-weight: lighter;
+}
+
+.footer strong {
   color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
