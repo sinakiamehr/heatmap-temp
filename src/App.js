@@ -23,30 +23,33 @@ function App() {
     d3.select(svgRef.current).selectAll("*").remove();
     
     // Set dimensions and margins
-    const margin = { top: 80, right: 40, bottom: 120, left: 60 };
-    const width = 1200 - margin.left - margin.right;
-    const height = 500 - margin.top - margin.bottom;
+    const width = 1200;
+    const height = 900;
+    const padding = 100;
     
     // Create SVG
     const svg = d3.select(svgRef.current)
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+      .attr("width", width)
+      .attr("height", height);
+
+    // Create main group for the chart
+    const g = svg.append("g")
     
-    // Add title and description
-    svg.append("text")
+   
+      // Add title
+    g.append("text")
       .attr("id", "title")
-      .attr("x", width / 2)
-      .attr("y", -45)
+      .attr("x", (width) / 2)
+      .attr("y", padding * 0.5)
       .attr("text-anchor", "middle")
       .style("font-size", "24px")
       .text("Monthly Global Land-Surface Temperature");
     
-    svg.append("text")
+    // Add description
+    g.append("text")
       .attr("id", "description")
-      .attr("x", width / 2)
-      .attr("y", -20)
+      .attr("x", (width) / 2)
+      .attr("y", padding * 0.8)
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .text(`${Math.min(...data.map(d => d.year))} - ${Math.max(...data.map(d => d.year))}: base temperature ${baseTemperature}℃`);
@@ -55,13 +58,13 @@ function App() {
     const years = [...new Set(data.map(d => d.year))];
     const xScale = d3.scaleBand()
       .domain(years)
-      .range([0, width])
+      .range([padding, width - padding])
       .padding(0);
     
     const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
     const yScale = d3.scaleBand()
       .domain(months)
-      .range([0, height])
+      .range([height - padding, padding])
       .padding(0);
     
     // Create color scale
@@ -74,7 +77,7 @@ function App() {
     
     // Create axes
     const xAxis = d3.axisBottom(xScale)
-      .tickValues(xScale.domain().filter(year => year % 10 === 0))
+      .tickValues(xScale.domain().filter(year => year % 20 === 0))
       .tickFormat(d => d);
     
     const yAxis = d3.axisLeft(yScale)
@@ -84,35 +87,30 @@ function App() {
         return d3.timeFormat("%B")(date);
       });
     
-    svg.append("g")
+    g.append("g")
       .attr("id", "x-axis")
-      .attr("transform", `translate(0, ${height})`)
+      .attr("transform", `translate(0, ${height - padding})`)
       .call(xAxis)
       .selectAll("text")
       .style("text-anchor", "middle");
     
-    svg.append("g")
+    g.append("g")
       .attr("id", "y-axis")
+      .attr("transform", `translate(${padding}, 0)`)
       .call(yAxis);
     
     // Create tooltip
-    const tooltip = d3.select("body")
+    const tooltip = d3.select(".chart-container")
       .append("div")
       .attr("id", "tooltip")
-      .style("opacity", 0)
-      .style("position", "absolute")
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "1px")
-      .style("border-radius", "5px")
-      .style("padding", "10px");
+      .attr("class", "tooltip");
     
     // Create cells
-    svg.selectAll("rect")
+    g.selectAll("rect")
       .data(data)
       .enter()
       .append("rect")
-      .attr("class", "cell")
+      .attr("class", "dot")
       .attr("x", d => xScale(d.year))
       .attr("y", d => yScale(d.month - 1))
       .attr("width", xScale.bandwidth())
@@ -150,11 +148,11 @@ function App() {
       .tickFormat(d => d.toFixed(1) + "℃")
       .tickValues(d3.range(minTemp, maxTemp, (maxTemp - minTemp) / legendColors));
     
-    const legend = svg.append("g")
+    const legend = g.append("g")
       .attr("id", "legend")
-      .attr("transform", `translate(${(width - legendWidth) / 2}, ${height + 50})`);
+      .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - padding * 0.5})`);
     
-    const defs = svg.append("defs");
+    const defs = g.append("defs");
     const gradient = defs.append("linearGradient")
       .attr("id", "gradient")
       .attr("x1", "0%")
