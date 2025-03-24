@@ -61,10 +61,10 @@ function App() {
       .range([padding, width - padding])
       .padding(0);
     
-    const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+    const months = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
     const yScale = d3.scaleBand()
       .domain(months)
-      .range([height - padding, padding])
+      .range([padding, height - padding])
       .padding(0);
     
     // Create color scale
@@ -110,9 +110,9 @@ function App() {
       .data(data)
       .enter()
       .append("rect")
-      .attr("class", "dot")
+      .attr("class", "cell")
       .attr("x", d => xScale(d.year))
-      .attr("y", d => yScale(d.month - 1))
+      .attr("y", d => yScale(d.month))
       .attr("width", xScale.bandwidth())
       .attr("height", yScale.bandwidth())
       .attr("data-month", d => d.month - 1)
@@ -138,7 +138,7 @@ function App() {
     // Create legend
     const legendWidth = 400;
     const legendHeight = 20;
-    const legendColors = 10;
+    const numColors = 8; // Number of discrete color blocks
     
     const legendScale = d3.scaleLinear()
       .domain([minTemp, maxTemp])
@@ -146,32 +146,26 @@ function App() {
     
     const legendAxis = d3.axisBottom(legendScale)
       .tickFormat(d => d.toFixed(1) + "℃")
-      .tickValues(d3.range(minTemp, maxTemp, (maxTemp - minTemp) / legendColors));
+      .tickValues(d3.range(minTemp, maxTemp, (maxTemp - minTemp) / numColors));
     
     const legend = g.append("g")
       .attr("id", "legend")
       .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - padding * 0.5})`);
     
-    const defs = g.append("defs");
-    const gradient = defs.append("linearGradient")
-      .attr("id", "gradient")
-      .attr("x1", "0%")
-      .attr("y1", "0%")
-      .attr("x2", "100%")
-      .attr("y2", "0%");
-    
-    const colorStops = d3.range(0, 1.01, 0.1);
-    colorStops.forEach(stop => {
-      const tempValue = minTemp + stop * (maxTemp - minTemp);
-      gradient.append("stop")
-        .attr("offset", `${stop * 100}%`)
-        .attr("stop-color", colorScale(tempValue));
+    // Create color blocks for legend
+    const colorRanges = d3.range(numColors).map(i => {
+      const t = i / (numColors - 1);
+      return minTemp + t * (maxTemp - minTemp);
     });
     
-    legend.append("rect")
-      .attr("width", legendWidth)
+    legend.selectAll("rect")
+      .data(colorRanges)
+      .enter()
+      .append("rect")
+      .attr("x", (d, i) => (i * legendWidth) / numColors)
+      .attr("width", legendWidth / numColors)
       .attr("height", legendHeight)
-      .style("fill", "url(#gradient)");
+      .style("fill", d => colorScale(d));
     
     legend.append("g")
       .attr("transform", `translate(0, ${legendHeight})`)

@@ -67,11 +67,11 @@ svg {
 }
 
 /* Bars */
-.dot {
-  transition: all 0.2s ease-in-out !important;
+.cell {
+  transition: all 0.3s ease-in-out !important;
 }
 
-.dot:hover {
+.cell:hover {
   fill: green !important;
   cursor: pointer;
 }
